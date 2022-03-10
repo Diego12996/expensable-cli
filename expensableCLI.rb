@@ -1,15 +1,12 @@
-require_relative "sessions"
+require_relative "modules/sessions"
+require_relative "modules/helpers"
 
 class ExpensableCLI
+include Helpers
+
   def initialize
     @user = nil
     @notes = []
-  end
-
-  def intro
-    puts "####################################"
-    puts "#       Welcome to Expensable      #"
-    puts "####################################"
   end
 
   def main_menu
@@ -23,9 +20,9 @@ class ExpensableCLI
         when "login"
           login
         when "create_user"
-          puts "execute create user"
+          create_user
         when "exit"
-          puts "Thanks"
+          exit
         end
       rescue HTTParty::ResponseError => error
         parsed_error = JSON.parse(error.message, symbolize_names: true)
@@ -34,36 +31,22 @@ class ExpensableCLI
     end
   end
 
-  def get_with_options(options)
-    input = ""
-
-    loop do
-      puts options.join (" | ")
-      print "> "
-      input = gets.chomp
-      break if options.include?(input)
-      puts "Invalid option"
-    end
-    input
-
+  def create_user
+    credentials = create_form
+    @user = Modules::Sessions.signup(credentials)
   end
 
   def login
     credentials = login_form
-    @user = Sessions.login(credentials)
+    p credentials
+    @user = Modules::Sessions.login(credentials)
   end
-
-  def login_form
-    print "username: "
-    username = gets.chomp
-
-    print "password: "
-    password = gets.chomp
-
-    { email: username, password: password }
+ 
+  def logout
+    @user = Modules::Sessions.logout(@user[:token])
   end
 
 end
 
-prueba = Expensable.new
+prueba = ExpensableCLI.new
 prueba.main_menu
