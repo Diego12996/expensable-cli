@@ -60,7 +60,7 @@ class Expensable
     print "password: "
     password = gets.chomp
 
-    {username: username, password: password}
+    { email: username, password: password }
   end
 
 end
