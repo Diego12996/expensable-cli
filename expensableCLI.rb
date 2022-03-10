@@ -9,7 +9,6 @@ include Helpers
     @notes = []
   end
 
-
   def main_menu
     intro
     action = ""
@@ -23,7 +22,7 @@ include Helpers
         when "create_user"
           create_user
         when "exit"
-          logout
+          exit
         end
       rescue HTTParty::ResponseError => error
         parsed_error = JSON.parse(error.message, symbolize_names: true)
@@ -39,14 +38,15 @@ include Helpers
 
   def login
     credentials = login_form
+    p credentials
     @user = Modules::Sessions.login(credentials)
   end
  
   def logout
-    @user = Modules::Sessions.logout
+    @user = Modules::Sessions.logout(@user[:token])
   end
 
 end
 
-prueba = Expensable.new
+prueba = ExpensableCLI.new
 prueba.main_menu

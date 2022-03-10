@@ -3,10 +3,16 @@ module Helpers
     # table = Terminal::Table.new
     # table.title = title
   end
-  
+
   def intro
     puts "####################################"
     puts "#       Welcome to Expensable      #"
+    puts "####################################"
+  end
+
+  def exit
+    puts "####################################"
+    puts "#    Thanks for using Expensable   #"
     puts "####################################"
   end
 
@@ -47,8 +53,9 @@ module Helpers
       print "#{label}: "
       input = gets.chomp
       break unless input.empty? && required
-      puts ""
+      puts "Can't be blank"
     end
+    input
   end
   
 end

@@ -30,11 +30,12 @@ module Modules
       JSON.parse(response.body, symbolize_names: true)
     end
 
-    def self.logout
+    def self.logout(token)
       options = {
-        headers: { "Authorization": "Token token=token"}
+        headers: { "Authorization": "Token token=#{token}"}
       }
 
       response = post("/logout", options)
+    end
   end
 end
