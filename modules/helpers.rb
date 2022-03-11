@@ -1,3 +1,5 @@
+require "terminal-table"
+
 module Helpers
   def print_table(title, headings, rows)
     table = Terminal::Table.new
@@ -44,19 +46,25 @@ module Helpers
     { email: email, password: password, first_name: first_name, last_name: last_name, phone: phone}
   end
 
-  def get_with_options(options)
-    input = ""
+  def get_with_options(options, options2 = nil)
+    action = ""
+    id = nil
 
-    loop do
-      puts options.join (" | ")
-      print "> "
-      input = gets.chomp
-      break if options.include?(input)
-      puts "Invalid option"
-    end
-    input
+    puts "#{options.join(' | ')}"
+    puts "#{options2.join(' | ')}" if options2
+    print "> "
+    action, id = gets.chomp.split
+    id.nil? ? action : [action, id]    
   end
 
+  def login_menu
+    get_with_options(["login", "create_user", "exit" ])
+  end
+  
+  def account_menu
+    get_with_options(["create","show ID", "update ID", "delete ID"],
+                    ["add-to ID", "toggle", "next", "prev", "logout"])
+  end
   def get_string(label, required: false)
     input = ""
 
