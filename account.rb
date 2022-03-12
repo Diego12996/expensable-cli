@@ -2,6 +2,7 @@ require 'json'
 require_relative "modules/helpers"
 require_relative "modules/categories"
 require_relative "modules/sessions"
+require_relative "modules/transactions"
 class Account
   attr_reader :name, :date, :categories, :view_month
 
@@ -73,11 +74,21 @@ class Account
 
   # -- Form Delete Category --
   def delete_category(id)
-    delete_category = Categories.delete(@token, id)
-    @categories.reject! { |category| category[:id] == id}
+    Categories.destroy(@token, id)
+    @categories = @categories.reject { |category| category[:id] == id}
     @view_month = show_categories
   end
   # ---- END FORMS TO CATEGORY ----
+  
+  # ---- FORMS FOR TRANSACTIONS ----
+  # -- Form Add-to Transaction --
+  def add_to_transaction(id)
+    parameters = form_add_to_transaction
+    create_transaction = Transactions.create(@token, id, parameters)
+    (@categories.find { |category| category[:id] == id })[:transactions].push(create_transaction)
+    @view_month = show_categories
+  end
+  # ---- END FORMS TO TRANSACTIONS ----
 end
 
 # user = Sessions.login({email: "test1@mail.com", password: "123456"})

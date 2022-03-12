@@ -44,17 +44,14 @@ module Services
       JSON.parse(response.body, symbolize_names: true)
     end
 
-    def self.delete(token, id)
+    def self.destroy(token, id)
       options = {
         headers: { Authorization: "Token token=#{token}" }
       }
-      
+
       response = delete("/categories/#{id}", options)
       raise HTTParty::ResponseError.new(response) unless response.success?
-      JSON.parse(response.body, symbolize_names: true)
     end
-
-
   end
   
 end

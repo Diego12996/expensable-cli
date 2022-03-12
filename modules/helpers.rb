@@ -65,6 +65,7 @@ module Helpers
     get_with_options(["create","show ID", "update ID", "delete ID"],
                     ["add-to ID", "toggle", "next", "prev", "logout"])
   end
+  
   def get_string(label, required: false)
     input = ""
 
@@ -77,4 +78,18 @@ module Helpers
     input
   end
   
+  def form_add_to_transaction
+    form = {amount: nil, date: nil, notes: nil }
+    loop do
+      form[:amount] = get_string("Amount", required: true).to_i
+      form[:amount].zero? ? (puts "Cannot be zero") : break
+    end
+    loop do
+      form[:date] = get_string("Date", required: true)
+      form[:date].match?(/^\d{4}-\d{2}-\d{2}$/) ? break : (puts "Required format: YYYY-MM-DD")
+    end
+    form[:notes] = get_string("Notes")
+    form
+  end
+
 end

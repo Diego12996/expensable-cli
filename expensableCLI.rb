@@ -51,21 +51,21 @@ include Helpers
   end
 # ---- End Methods for user ----
 
-# ---- View
+# ---- View ----
   def menu_account
-    @account = Account.new(@user[:token])
-    
+    @account = Account.new(@user[:token]) 
     loop do
       print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
                   ["ID", "Category", "Total"], @account.view_month)
         # print table for Expenses and Incomes
       action, id = account_menu
+      id = id.to_i
       case action
       when "create" then @account.create_category
-      #when "show" then #@account.show_category(id)
+      when "show" then menu_category(id)
       when "update" then @account.update_category(id)
       when "delete" then @account.delete_category(id)
-      #when "add-to" then
+      when "add-to" then @account.add_to_transaction(id)
       when "toggle" then @account.toggle
       when "next" then @account.change_week("next")
       when "prev" then @account.change_week("prev")
@@ -73,9 +73,12 @@ include Helpers
         break
       end
     end
-    
     print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
                ["ID", "Category", "Total"], @account.view_month)
+  end
+  def menu_category(id)
+    loop do 
+    end
   end
 end
 
