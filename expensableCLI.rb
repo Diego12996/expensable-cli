@@ -1,6 +1,7 @@
 require_relative "modules/sessions"
 require_relative "modules/helpers"
 require_relative "account"
+require_relative "category"
 class ExpensableCLI
 include Helpers
 
@@ -18,12 +19,9 @@ include Helpers
       action = login_menu
       begin
         case action
-        when "login"
-          login
-        when "create_user"
-          create_user
-        when "exit"
-          exit
+        when "login" then login
+        when "create_user" then create_user
+        when "exit"then exit
         else
           puts "Invalid options"
         end
@@ -76,8 +74,21 @@ include Helpers
     print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
                ["ID", "Category", "Total"], @account.view_month)
   end
-  def menu_category(id)
-    loop do 
+  def menu_category(id_category)
+    category = Category.new(@user[:token], @account.date, @account.find_category(id_category))
+    loop do
+      print_table("#{parse_name(category.name)}\n#{parse_date(category.date)}",
+               ["ID", "Date", "Amount", "Notes"], category.show_category)
+      action, id = category_menu
+      id = id.to_i
+      case action
+      when "add" then @account.add_to_transaction(id_category)
+      when "update" then category.update_transaction(id, id_category)
+      when "delete" then category.delete_transaction(id, id_category)
+      when "next" then category.change_week("next")
+      when "prev" then category.change_week("prev")
+      when "back" then break 
+      end
     end
   end
 end

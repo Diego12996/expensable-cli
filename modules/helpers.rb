@@ -66,6 +66,11 @@ module Helpers
                     ["add-to ID", "toggle", "next", "prev", "logout"])
   end
   
+  def category_menu
+    get_with_options(["add","update ID", "delete ID"],
+                    ["next", "prev", "back"])
+  end
+
   def get_string(label, required: false)
     input = ""
 

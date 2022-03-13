@@ -62,13 +62,15 @@ class Account
     @view_month = show_categories
   end
 
+  def find_category(id)
+    @categories.find { |category| category[:id] == id }
+  end
   # -- Form Update Category --
   def update_category(id)
     name = get_string("name")
     transaction_type = get_string("Transaction type")
     update_category = Categories.update(@token, id, { name: name, transaction_type: transaction_type })
-    find_category = @categories.find { |category| category[:id] == id }
-    find_category.update(update_category)
+    find_category(id).update(update_category)
     @view_month = show_categories
   end
 
