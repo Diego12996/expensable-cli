@@ -1,4 +1,6 @@
 require "terminal-table"
+require "colorized_string"
+require "colorize"
 
 module Helpers
   def print_table(title, headings, rows)
@@ -6,6 +8,9 @@ module Helpers
     table.title = title
     table.headings = headings
     table.rows = rows
+    table.style = { border_x: ColorizedString["-"].colorize(:light_magenta),
+                border_y: ColorizedString["|"].colorize(:light_magenta),
+                border_i: ColorizedString["+"].colorize(:light_magenta) }
     puts table
   end
 
@@ -18,15 +23,15 @@ module Helpers
   end
 
   def intro
-    puts "####################################"
-    puts "#       Welcome to Expensable      #"
-    puts "####################################"
+    puts "####################################".colorize(:light_magenta)
+    puts "#       Welcome to Expensable      #".colorize(:light_magenta)
+    puts "####################################".colorize(:light_magenta)
   end
 
   def exit
-    puts "####################################"
-    puts "#    Thanks for using Expensable   #"
-    puts "####################################"
+    puts "####################################".colorize(:light_magenta)
+    puts "#    Thanks for using Expensable   #".colorize(:light_magenta)
+    puts "####################################".colorize(:light_magenta)
   end
 
   def login_form
@@ -55,9 +60,9 @@ module Helpers
   end
 
   def get_with_options(options, options2 = nil)
-    puts options.join(" | ").to_s
-    puts options2.join(" | ").to_s if options2
-    print "> "
+    puts options.join(" | ").to_s.colorize(:light_cyan)
+    puts options2.join(" | ").to_s.colorize(:light_cyan) if options2
+    print "> ".colorize(:blue)
     action, id = gets.chomp.split
     id.nil? ? action : [action, id]
   end
@@ -80,11 +85,11 @@ module Helpers
     input = ""
 
     loop do
-      print "#{label}: "
+      print "#{label}: ".colorize(:yellow)
       input = gets.chomp
       break unless input.empty? && required
 
-      puts "Cannot be blank"
+      puts "Cannot be blank".colorize(:red)
     end
     input
   end
@@ -103,11 +108,11 @@ module Helpers
     form = { amount: nil, date: nil, notes: nil }
     loop do
       form[:amount] = get_string("Amount", required: true).to_i
-      form[:amount].zero? ? (puts "Cannot be zero") : break
+      form[:amount].zero? ? (puts "Cannot be zero".colorize(:red)) : break
     end
     loop do
       form[:date] = get_string("Date", required: true)
-      form[:date].match?(/^\d{4}-\d{2}-\d{2}$/) ? break : (puts "Required format: YYYY-MM-DD")
+      form[:date].match?(/^\d{4}-\d{2}-\d{2}$/) ? break : (puts "Required format: YYYY-MM-DD".colorize(:red))
     end
     form[:notes] = get_string("Notes")
     form

@@ -2,6 +2,7 @@ require_relative "modules/helpers"
 require_relative "modules/sessions"
 require_relative "account"
 require_relative "category"
+require "colorize"
 
 class ExpensableCLI
   include Helpers
@@ -42,7 +43,7 @@ class ExpensableCLI
   def login
     credentials = login_form
     @user = Sessions.login(credentials)
-    puts "Welcome back #{@user[:first_name]} User"
+    puts "Welcome back #{@user[:first_name]} User".colorize(:light_green)
     menu_account
   end
 
@@ -63,10 +64,10 @@ class ExpensableCLI
       validation = @account.find_category(id).nil?
       case action
       when "create" then @account.create_category
-      when "show" then validation ? (puts "Not Found") : menu_category(id)
-      when "update" then validation ? (puts "Not Found") : @account.update_category(id)
-      when "delete" then validation ? (puts "Not Found") : @account.delete_category(id)
-      when "add-to" then validation ? (puts "Not Found") : @account.add_to_transaction(id)
+      when "show" then validation ? (puts "Not Found".colorize(:red)) : menu_category(id)
+      when "update" then validation ? (puts "Not Found".colorize(:red)) : @account.update_category(id)
+      when "delete" then validation ? (puts "Not Found".colorize(:red)) : @account.delete_category(id)
+      when "add-to" then validation ? (puts "Not Found".colorize(:red)) : @account.add_to_transaction(id)
       when "toggle" then @account.toggle
       when "next" then @account.change_week("next")
       when "prev" then @account.change_week("prev")
@@ -87,9 +88,9 @@ class ExpensableCLI
       id = id.to_i
       validation = category.find_transaction(id).nil?
       case action
-      when "add" then validation ? (puts "Not Found") : @account.add_to_transaction(id_category)
-      when "update" then validation ? (puts "Not Found") : category.update_transaction(id, id_category)
-      when "delete" then validation ? (puts "Not Found") : category.delete_transaction(id, id_category)
+      when "add" then validation ? (puts "Not Found".colorize(:red)) : @account.add_to_transaction(id_category)
+      when "update" then validation ? (puts "Not Found".colorize(:red)) : category.update_transaction(id, id_category)
+      when "delete" then validation ? (puts "Not Found".colorize(:red)) : category.delete_transaction(id, id_category)
       when "next" then category.change_week("next")
       when "prev" then category.change_week("prev")
       when "back" then break
