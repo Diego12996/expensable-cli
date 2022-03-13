@@ -1,4 +1,4 @@
-require 'json'
+require "json"
 require_relative "modules/helpers"
 require_relative "modules/categories"
 require_relative "modules/sessions"
@@ -10,18 +10,17 @@ class Account
   include Helpers
   def initialize(token)
     @name = "expense"
-    @date =  Date.new(2021,12) #Actual Date for instruccions
+    @date =  Date.new(2021, 12) # Actual Date for instruccions
     @token = token
     @categories = Categories.index(@token)
     @view_month = show_categories
   end
-  
 
   def toggle
-    @name = (@name == "expense") ? "income" : "expense"
+    @name = @name == "expense" ? "income" : "expense"
     @view_month = show_categories
   end
-  
+
   def change_week(change_value)
     @date = @date.next_month if change_value == "next"
     @date = @date.prev_month if change_value == "prev"
@@ -33,7 +32,7 @@ class Account
     transactions.each do |transaction|
       transaction_date = Date.parse(transaction[:date])
       next unless transaction_date.month == @date.month && transaction_date.year == @date.year
-      
+
       total += transaction[:amount]
     end
     total
@@ -42,12 +41,10 @@ class Account
   def show_categories
     rows = []
     @categories.each do |category|
-      if category[:transaction_type] == @name
-        total = total_amount_per_month(category[:transactions])
-        if !total.zero? || category[:transactions].empty?
-          rows.push([category[:id], category[:name], total]) 
-        end
-      end
+      next unless category[:transaction_type] == @name
+
+      total = total_amount_per_month(category[:transactions])
+      rows.push([category[:id], category[:name], total]) if !total.zero? || category[:transactions].empty?
     end
     rows.sort_by(&:first)
   end
@@ -65,6 +62,7 @@ class Account
   def find_category(id)
     @categories.find { |category| category[:id] == id }
   end
+
   # -- Form Update Category --
   def update_category(id)
     name = get_string("name")
@@ -77,11 +75,11 @@ class Account
   # -- Form Delete Category --
   def delete_category(id)
     Categories.destroy(@token, id)
-    @categories = @categories.reject { |category| category[:id] == id}
+    @categories = @categories.reject { |category| category[:id] == id }
     @view_month = show_categories
   end
   # ---- END FORMS TO CATEGORY ----
-  
+
   # ---- FORMS FOR TRANSACTIONS ----
   # -- Form Add-to Transaction --
   def add_to_transaction(id)

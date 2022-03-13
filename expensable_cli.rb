@@ -1,10 +1,11 @@
-require_relative "modules/sessions"
 require_relative "modules/helpers"
+require_relative "modules/sessions"
 require_relative "account"
 require_relative "category"
-class ExpensableCLI
-include Helpers
 
+class ExpensableCLI
+  include Helpers
+  include Modules
   def initialize
     @user = nil
     @account = nil
@@ -25,37 +26,38 @@ include Helpers
         else
           puts "Invalid options"
         end
-      rescue HTTParty::ResponseError => error
-        parsed_error = JSON.parse(error.message, symbolize_names: true)
+      rescue HTTParty::ResponseError => e
+        parsed_error = JSON.parse(e.message, symbolize_names: true)
         puts parsed_error
       end
     end
   end
+
   # ---- Methods for user ----
   def create_user
     credentials = create_form
-    @user = Modules::Sessions.signup(credentials)
+    @user = Sessions.signup(credentials)
   end
 
   def login
     credentials = login_form
-    @user = Modules::Sessions.login(credentials)
+    @user = Sessions.login(credentials)
     puts "Welcome back #{@user[:first_name]} User"
     menu_account
   end
- 
-  def logout
-    @user = Modules::Sessions.logout(@user[:token])
-  end
-# ---- End Methods for user ----
 
-# ---- View ----
+  def logout
+    @user = Sessions.logout(@user[:token])
+  end
+  # ---- End Methods for user ----
+
+  # ---- View ----
   def menu_account
-    @account = Account.new(@user[:token]) 
+    @account = Account.new(@user[:token])
     loop do
       print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
                   ["ID", "Category", "Total"], @account.view_month)
-        # print table for Expenses and Incomes
+      # print table for Expenses and Incomes
       action, id = account_menu
       id = id.to_i
       case action
@@ -71,14 +73,15 @@ include Helpers
         break
       end
     end
-    print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
-               ["ID", "Category", "Total"], @account.view_month)
+    # print_table("#{parse_name(@account.name)}\n#{parse_date(@account.date)}",
+    # ["ID", "Category", "Total"], @account.view_month)
   end
+
   def menu_category(id_category)
     category = Category.new(@user[:token], @account.date, @account.find_category(id_category))
     loop do
       print_table("#{parse_name(category.name)}\n#{parse_date(category.date)}",
-               ["ID", "Date", "Amount", "Notes"], category.show_category)
+                  ["ID", "Date", "Amount", "Notes"], category.show_category)
       action, id = category_menu
       id = id.to_i
       case action
@@ -87,7 +90,7 @@ include Helpers
       when "delete" then category.delete_transaction(id, id_category)
       when "next" then category.change_week("next")
       when "prev" then category.change_week("prev")
-      when "back" then break 
+      when "back" then break
       end
     end
   end

@@ -14,9 +14,9 @@ module Modules
       }
 
       response = post("/login", options)
-      raise HTTParty::ResponseError.new(response) unless response.success?
-      JSON.parse(response.body, symbolize_names: true)
+      raise HTTParty::ResponseError, response unless response.success?
 
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     def self.signup(credentials)
@@ -26,16 +26,18 @@ module Modules
       }
 
       response = post("/signup", options)
-      raise HTTParty::ResponseError.new(response) unless response.success?
+      raise HTTParty::ResponseError, response unless response.success?
+
       JSON.parse(response.body, symbolize_names: true)
     end
 
     def self.logout(token)
       options = {
-        headers: { "Authorization": "Token token=#{token}"}
+        headers: { Authorization: "Token token=#{token}" }
       }
 
       response = post("/logout", options)
+      raise HTTParty::ResponseError, response unless response.success?
     end
   end
 end
