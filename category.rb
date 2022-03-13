@@ -1,5 +1,6 @@
 require_relative "modules/helpers"
 require_relative "modules/transactions"
+require "colorize"
 
 class Category
   attr_reader :name, :date

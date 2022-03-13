@@ -1,5 +1,6 @@
 require "httparty"
 require "json"
+require "colorize"
 
 module Services
   class Categories
