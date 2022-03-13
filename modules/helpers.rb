@@ -99,7 +99,6 @@ module Helpers
     { name: name, transaction_type: transaction_type }
   end
 
-
   def form_add_to_transaction
     form = { amount: nil, date: nil, notes: nil }
     loop do
