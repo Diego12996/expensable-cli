@@ -60,12 +60,13 @@ class ExpensableCLI
       # print table for Expenses and Incomes
       action, id = account_menu
       id = id.to_i
+      validation = @account.find_category(id).nil?
       case action
       when "create" then @account.create_category
-      when "show" then menu_category(id)
-      when "update" then @account.update_category(id)
-      when "delete" then @account.delete_category(id)
-      when "add-to" then @account.add_to_transaction(id)
+      when "show" then validation ? (puts "Not Found") : menu_category(id)
+      when "update" then validation ? (puts "Not Found") : @account.update_category(id)
+      when "delete" then validation ? (puts "Not Found") : @account.delete_category(id)
+      when "add-to" then validation ? (puts "Not Found") : @account.add_to_transaction(id)
       when "toggle" then @account.toggle
       when "next" then @account.change_week("next")
       when "prev" then @account.change_week("prev")
@@ -84,10 +85,11 @@ class ExpensableCLI
                   ["ID", "Date", "Amount", "Notes"], category.show_category)
       action, id = category_menu
       id = id.to_i
+      validation = category.find_transaction(id).nil?
       case action
-      when "add" then @account.add_to_transaction(id_category)
-      when "update" then category.update_transaction(id, id_category)
-      when "delete" then category.delete_transaction(id, id_category)
+      when "add" then validation ? (puts "Not Found") : @account.add_to_transaction(id_category)
+      when "update" then validation ? (puts "Not Found") : category.update_transaction(id, id_category)
+      when "delete" then validation ? (puts "Not Found") : category.delete_transaction(id, id_category)
       when "next" then category.change_week("next")
       when "prev" then category.change_week("prev")
       when "back" then break

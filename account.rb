@@ -52,9 +52,7 @@ class Account
   # ---- FORMS METHODS TO CATEGORY ----
   # -- Form Create Category --
   def create_category
-    name = get_string("name", required: true)
-    transaction_type = get_string("Transaction type", required: true)
-    new_category = Categories.create(@token, { name: name, transaction_type: transaction_type })
+    new_category = Categories.create(@token, form_create_category)
     @categories = categories.push(new_category)
     @view_month = show_categories
   end
@@ -65,9 +63,7 @@ class Account
 
   # -- Form Update Category --
   def update_category(id)
-    name = get_string("name")
-    transaction_type = get_string("Transaction type")
-    update_category = Categories.update(@token, id, { name: name, transaction_type: transaction_type })
+    update_category = Categories.update(@token, id, form_create_category)
     find_category(id).update(update_category)
     @view_month = show_categories
   end

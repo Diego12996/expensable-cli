@@ -15,7 +15,6 @@ module Modules
 
       response = post("/login", options)
       raise HTTParty::ResponseError, response unless response.success?
-
       JSON.parse(response.body, symbolize_names: true)
     end
 
